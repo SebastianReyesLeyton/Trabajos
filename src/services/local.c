@@ -13,8 +13,8 @@ void localInit( Local* l ) {
 void showLocal( Local l ) {
     printf("Name: %s\n", l.name);
     printf("Code: %d\n", l.code);
-    if (l.floor) {printf("Floor: Occupied\n");}
-    else { printf("Floor: Free\n");}
-    printf("State: %i\n", l.state);
+    if (l.state) {printf("State: Occupied\n");}
+    else { printf("State: Free\n");}
+    printf("Floor: %i\n", l.floor);
     printf("Cost: %i\n", l.cost);
 }

@@ -1,7 +1,7 @@
 #ifndef STATE_H
 #define STATE_H
 
-#define FREE 0
-#define OCCUPIED 1
+enum states{ FREE=0, OCCUPIED=1 };
+enum vehicle{ CAR=0, MOTORCYCLE=1 };
 
 #endif
