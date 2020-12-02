@@ -1,9 +1,9 @@
 #ifndef LOCAL_H
 #define LOCAL_H
 
-#define FREE 0
-#define OCCUPIED 1
-
+#include <stdio.h>
+#include <stdlib.h>
+#include "./state.h"
 typedef struct Local {
     char* name;             // Local name
     int code;               // Code of local
@@ -14,5 +14,7 @@ typedef struct Local {
 
 void avaiable( Local* );
 void unavaiable( Local* );
+void localInit( Local* );
+void showLocal( Local );
 
 #endif
