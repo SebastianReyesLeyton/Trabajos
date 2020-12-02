@@ -16,6 +16,8 @@ mallTest3:
 mallTest4:
 	gcc $(tests)/mallTest4.c $(services)/local.c $(services)/mall.c -o mallTest4.out -lrt
 
+main:
+	gcc main.c $(services)/local.c $(services)/mall.c -o main.out -lrt
 
 delete: 
 	rm *.out
