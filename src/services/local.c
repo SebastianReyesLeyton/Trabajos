@@ -3,7 +3,7 @@
 void avaiable( Local *l ) { l->state = FREE;}
 void unavaiable( Local *l) {l ->state = OCCUPIED;}
 void localInit( Local* l ) {
-    l->name = "";
+    strcpy(l->name, "");
     l->code = 0;
     l->floor = 0;
     l->cost = 0;

@@ -1,11 +1,13 @@
 #ifndef LOCAL_H
 #define LOCAL_H
 
+#define N 200
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "./state.h"
 typedef struct Local {
-    char* name;             // Local name
+    char name[N];             // Local name
     int code;               // Code of local
     int floor;              // Floor of the mall where it's located
     int state;              // If local is free or occupied

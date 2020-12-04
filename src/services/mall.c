@@ -9,16 +9,17 @@ void mallInit( Mall* mall, int n, int m ){
         mall->mall[i] = (Local *) calloc(m, sizeof(Local));
     }
 
-    Local l;
-    localInit( &l );
     int cont = 0;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
+            Local l;
+            localInit( &l );
             l.code = cont;
             mall->mall[i][j] = l;
             cont++;
         }
     }
+
 }
 
 void report( Mall m ) {
@@ -27,7 +28,7 @@ void report( Mall m ) {
         for (int j = 0; j < m.localsFloor; j++) {
             if (m.mall[i][j].state == FREE) cant++;
         }
-        printf("%d floor: %d\n", i+1, cant);
+        printf("Piso %d: %d\n", i+1, cant);
     }
 }
 
@@ -38,12 +39,12 @@ void orderFloor( Mall *m, int floor ) {
         tmp = m->mall[floor][i];
         int j = i - 1;
         while (j >= 0 && m->mall[floor][j].cost < tmp.cost) {
-            m->mall[floor][j+1].name = m->mall[floor][j].name;
+            strcpy(m->mall[floor][j+1].name, m->mall[floor][j].name);
             m->mall[floor][j+1].cost = m->mall[floor][j].cost;
             m->mall[floor][j+1].state = m->mall[floor][j].state;
             j--;
         }
-        m->mall[floor][j+1].name = tmp.name;
+        strcpy(m->mall[floor][j+1].name, tmp.name);
         m->mall[floor][j+1].cost = tmp.cost;
         m->mall[floor][j+1].state = tmp.state;
     }
@@ -54,6 +55,7 @@ int rent( Mall* m, int floor, int quantity ) {
     for ( int i = 0; i < m->localsFloor; i++ ) {
         if (m->mall[floor][i].state == FREE && m->mall[floor][i].cost <= quantity) {
             unavaiable( &m->mall[floor][i] );
+            showLocal( m->mall[floor][i] );
             ans = i;
             i = m->localsFloor;
         }
@@ -61,30 +63,50 @@ int rent( Mall* m, int floor, int quantity ) {
     return ans;
 }
 
-int modifyLocals( Mall *m, int oldFloor, Local local ) {
+int modifyLocals( Mall *mall, Local old, Local local ) {
     int ans = -1;
-    for ( int j = 0; j < m->localsFloor; j++ ){
-        if (!strcmp(m->mall[oldFloor][j].name, local.name)) {
-            int tmp = rent( m, local.floor, local.cost );
-            printf("%d\n", tmp);
-            if (oldFloor != local.floor && tmp != -1 ) {
-                local.code = m->mall[local.floor][tmp].code;
-                local.state = m->mall[local.floor][tmp].state;
-                m->mall[local.floor][tmp] = local;
-                showLocal( m->mall[local.floor][tmp] );
-                Local l;
-                localInit( &l );
-                l.code = m->mall[oldFloor][j].code;
-                m->mall[oldFloor][j] = l;
-                ans = 1;
-            }
+    int floor = (int)(old.code / mall->localsFloor);
+    int j = old.code - floor*mall->localsFloor;
+    mall->mall[floor][j] = local;
+    if (old.floor != local.floor) {
+        ans = rent( mall, local.floor, local.cost );
+        if (ans != -1) {
+            mall->mall[local.floor][ans] = mall->mall[floor][j];
+            localInit( &mall->mall[floor][j] );
         }
+        else {
+            mall->mall[floor][j].floor = floor;
+        }
+    }
+    else {
+        ans = 1;
     }
     return ans;
 }
 
-void vacateLocal( Mall *m, int code ) {
-    int floor = (code / m->localsFloor);
-    int j = floor*m->localsFloor - code;
-    avaiable( &m->mall[floor][j] );
+void vacateLocal( Mall *mall, int code ) {
+    int floor = (int)(code / mall->localsFloor);
+    int j = code - floor*mall->localsFloor;
+    avaiable( &mall->mall[floor][j] );
+}
+
+Local seekLocal( Mall mall, int code ) {
+    int floor = (int)(code / mall.localsFloor);
+    int j = code - floor*mall.localsFloor;
+    return mall.mall[floor][j];
+}
+
+void showMall( Mall mall ) {
+    for (int i = 0; i < mall.floors; i++) {
+        for (int j = 0; j < mall.localsFloor; j++ ) {
+            printf("%d ", mall.mall[i][j].code);
+        }
+        printf("\n");
+    }
+}
+
+void showLMall( Mall mall, int code ) {
+    int floor = (int)(code / mall.localsFloor);
+    int j = code - floor*mall.localsFloor;
+    showLocal( mall.mall[floor][j] );
 }

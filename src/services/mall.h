@@ -16,7 +16,10 @@ void mallInit( Mall*, int, int );
 void report( Mall );
 void orderFloor( Mall*, int );
 int rent( Mall*, int, int );
-int modifyLocals( Mall*, int, Local);
+int modifyLocals( Mall*, Local , Local);
 void vacateLocal( Mall*, int );
+Local seekLocal( Mall, int );
+void showMall( Mall );
+void showLMall( Mall, int );
 
 #endif
