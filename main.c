@@ -2,7 +2,8 @@
 
 enum process { INIT=0, RENT, ORDERFLOOR, REPORT, MODIFYLOCALS, 
                VACATELOCALS, ENTERVEHICLE, EXTENDPARKING, 
-               STATEPARKING, SHOWLOCAL, FINISH, PARKING, MALL  };
+               STATEPARKING, SHOWLOCAL, FINISH, PARKING, MALL,
+               LOADFILE };
 
 void clear() {
     system("clear");
@@ -76,16 +77,18 @@ void optionsParking(int *state) {
 void initOptions(int *state) {
     int ans = 0;
 
-    while ( ans < 1 || ans > 2 ) {
+    while ( ans < 1 || ans > 3 ) {
         clear();
         printf("                      Opciones\n\n");
         printf( "1) Iniciar. \n" );
-        printf( "2) Salir. \n\n" );
+        printf( "2) Cargar datos anteriores. \n");
+        printf( "3) Salir. \n\n" );
         printf( "  Opcion: " );
         scanf( "%d", &ans );
     }
     switch (ans) {
         case 1: *state = INIT; break;
+        case 2: *state = LOADFILE; break;
         default: *state = FINISH; break;
     }
 }
@@ -242,8 +245,16 @@ int main() {
                     }
                     state = MALL;
                 }
+                else if ( state == PARKING ) {
+                    printf("En proceso de generar el menu.\n");
+                    state = PARKING;
+                }
             }
             state = INIT;
+        }
+        else if (state == LOADFILE) {
+            printf("Por implementar.\n");
+            state = LOADFILE;
         }
     }
     return 0;

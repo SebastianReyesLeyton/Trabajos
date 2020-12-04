@@ -17,7 +17,16 @@ mallTest4:
 	gcc $(tests)/mallTest4.c $(services)/local.c $(services)/mall.c -o mallTest4.out -lrt
 
 main:
-	gcc main.c $(services)/local.c $(services)/mall.c -o main.out -lrt
+	gcc main.c $(services)/local.c $(services)/mall.c $(services)/parkingLot.c $(services)/parking.c -o main.out -lrt
+
+parkingLotTest:
+	gcc $(tests)/parkingLotTest.c $(services)/parkingLot.c -o parkingLotTest.out -lrt
+
+parkingLotTest2:
+	gcc $(tests)/parkingLotTest2.c $(services)/parkingLot.c -o parkingLotTest2.out -lrt
+
+parkingTest:
+	gcc $(tests)/parkingTest.c $(services)/parkingLot.c $(services)/parking.c -o parkingTest.out -lrt
 
 delete: 
 	rm *.out
