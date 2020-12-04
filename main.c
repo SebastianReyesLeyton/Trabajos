@@ -1,9 +1,10 @@
 #include "src/services/mall.h"
+#include "src/services/parking.h"
 
 enum process { INIT=0, RENT, ORDERFLOOR, REPORT, MODIFYLOCALS, 
                VACATELOCALS, ENTERVEHICLE, EXTENDPARKING, 
                STATEPARKING, SHOWLOCAL, FINISH, PARKING, MALL,
-               LOADFILE };
+               LOADFILE, CHANGESPACE, LEAVEPARKING };
 
 void clear() {
     system("clear");
@@ -13,7 +14,7 @@ void pause() {
     system("sleep 2");
 }
 
-void init( Mall *mall ) {
+void init( Mall *mall, Parking *p ) {
     int n, m;
     clear();
     printf("Numero de pisos: ");
@@ -21,6 +22,7 @@ void init( Mall *mall ) {
     printf("Numero de locales por piso: ");
     scanf("%d", &m);
     mallInit( mall, n, m );
+    parkingInit( p );
 } 
 
 void optionsMall( int *state, Mall mall ) {
@@ -56,13 +58,15 @@ void optionsMall( int *state, Mall mall ) {
 void optionsParking(int *state) {
     int ans = 0;
 
-    while ( ans < 1 || ans > 4 ) {
+    while ( ans < 1 || ans > 6 ) {
         clear();
         printf("                      Opciones\n\n");
         printf( "1) Entra un vehiculo. \n" );
         printf( "2) Agrandar parqueadero. \n" );
         printf( "3) Estado del parqueadero. \n" );
-        printf( "4) Salir. \n\n" );
+        printf( "4) Sale vehiculo del parqueadero. \n" );
+        printf( "5) Cambiar tipo de espacio. \n" );
+        printf( "6) Salir. \n\n" );
         printf( "  Opcion: " );
         scanf( "%d", &ans );
     }
@@ -70,6 +74,8 @@ void optionsParking(int *state) {
         case 1: *state = ENTERVEHICLE; break;
         case 2: *state = EXTENDPARKING; break;
         case 3: *state = STATEPARKING; break;
+        case 4: *state = LEAVEPARKING; break;
+        case 5: *state = CHANGESPACE; break;
         default: *state = FINISH; break;
     }
 }
@@ -155,6 +161,21 @@ void localOptions( Mall m, Local *l ) {
     }
 }
 
+void vehicleOption( enum vehicle *v ) {
+    int ans = 0;
+    while (ans < 1 || ans > 2) {
+        clear();
+        printf( "1) Carro.\n" );
+        printf( "2) Moto.\n\n" );
+        printf( "  Opcion: " );
+        scanf("%d", &ans);
+    }
+
+    switch (ans) {
+        case 1: *v = CAR; break;
+        default: *v = MOTORCYCLE; break;
+    }
+}
 
 void optionsVehicleMall(int *state) {
     int ans = 0;
@@ -180,7 +201,8 @@ int main() {
         initOptions( &state );
         if (state == INIT) {
             Mall mall;
-            init( &mall );
+            Parking p;
+            init( &mall, &p );
             pause();
             while ( state != FINISH ) {
                 optionsVehicleMall( &state );
@@ -246,7 +268,51 @@ int main() {
                     state = MALL;
                 }
                 else if ( state == PARKING ) {
-                    printf("En proceso de generar el menu.\n");
+                    while (state != FINISH) {
+                        optionsParking( &state );
+                        enum vehicle v;
+                        int ans;
+                        switch (state) {
+                        case ENTERVEHICLE:
+                            vehicleOption( &v );
+                            ans = enter( &p, v );
+                            if (ans != -1) {printf("Proceso satisfactorio tu vehiculo se encuentra alojado en el parqueadero %d.\n", ans);}
+                            else {printf("No hay espacio en el parqueadero.\n");}
+                            pause();
+                            break;
+                        case EXTENDPARKING:
+                            printf("Ingresa el nuevo tamano del parqueadero: ");
+                            scanf("%d", &ans);
+                            if (ans <= p.n) {printf("Proceso no realizado debido a que no se esta aumentado el tamano del parqueadero.\n");}
+                            else {changeSize( &p, ans ); printf("Proceso realizado con exito!!.\n");}
+                            pause();
+                            break;
+                        case STATEPARKING:
+                            clear();
+                            showParkingState( p );
+                            pause();
+                            break;
+                        case LEAVEPARKING:
+                            printf("Introduce el id de la posicion en la que esta tu vehiculo para sacarlo: ");
+                            scanf("%d", &ans);
+                            ans = leaveParking( &p, ans );
+                            if (ans != -1) {printf("Proceso realizado satisfactoriamente.\n");}
+                            else {printf("Ocurrio un error, la posicion que ingresaste esta libre.\n");}
+                            pause();
+                            break;
+                        case CHANGESPACE:
+                            printf("Introduce el id de la posicion a la que quieras cambiarle el tipo: ");
+                            scanf("%d", &ans);
+                            vehicleOption( &v );
+                            ans = changeSpaceTo( &p, ans, v );
+                            if (ans != -1) {printf("Cambio exitoso.\n");}
+                            else {printf("Dicha posicion no cumple con las condiciones para poder cambiarle su tipo.\n");}
+                            pause();
+                            break;
+                        default:
+                            break;
+                        }
+                    }
                     state = PARKING;
                 }
             }

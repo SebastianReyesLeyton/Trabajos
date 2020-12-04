@@ -41,7 +41,7 @@ int enter( Parking *p, enum vehicle t ) {
 
 int changeSpaceTo( Parking *p, int pos, enum vehicle t ) {
     int ans = -1;
-    if (p->arr[pos].state == FREE) {
+    if (pos < p->n && pos >= 0 && p->arr[pos].state == FREE) {
         if (t == CAR) { changeToCar( &p->arr[pos] );}
         else { changeToMotorcycle( &p->arr[pos] );}
         ans = 1;
@@ -51,7 +51,7 @@ int changeSpaceTo( Parking *p, int pos, enum vehicle t ) {
 
 int leaveParking( Parking *p, int pos ) {
     int ans = -1;
-    if (p->arr[pos].state == OCCUPIED) {
+    if (pos < p->n && pos >= 0 && p->arr[pos].state == OCCUPIED) {
         p->arr[pos].state = FREE;
         ans = 1;
         p->m--;
