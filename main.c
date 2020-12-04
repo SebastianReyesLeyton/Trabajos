@@ -1,10 +1,11 @@
 #include "src/services/mall.h"
 #include "src/services/parking.h"
+#include "src/services/database.h"
 
 enum process { INIT=0, RENT, ORDERFLOOR, REPORT, MODIFYLOCALS, 
                VACATELOCALS, ENTERVEHICLE, EXTENDPARKING, 
                STATEPARKING, SHOWLOCAL, FINISH, PARKING, MALL,
-               LOADFILE, CHANGESPACE, LEAVEPARKING };
+               LOADFILE, SAVEFILE, CHANGESPACE, LEAVEPARKING };
 
 void clear() {
     system("clear");
@@ -180,17 +181,19 @@ void vehicleOption( enum vehicle *v ) {
 void optionsVehicleMall(int *state) {
     int ans = 0;
 
-    while ( ans < 1 || ans > 3 ) {
+    while ( ans < 1 || ans > 4 ) {
         system("clear");
         printf( "1) Centro Comercial. \n" );
         printf( "2) Parqueadero. \n" );
-        printf( "3) Salir. \n\n" );
+        printf( "3) Guardar informacion. \n" );
+        printf( "4) Salir. \n\n" );
         printf( "  Opcion: " );
         scanf( "%d", &ans );
     }
     switch (ans) {
         case 1: *state = MALL; break;
         case 2: *state = PARKING; break;
+        case 3: *state = SAVEFILE; break;
         default: *state = FINISH; break;
     }
 }
@@ -199,10 +202,11 @@ int main() {
     int state = INIT;
     while (state != FINISH) {
         initOptions( &state );
-        if (state == INIT) {
+        if (state == INIT || state == LOADFILE) {
             Mall mall;
             Parking p;
-            init( &mall, &p );
+            if (state == INIT) init( &mall, &p );
+            else { parkingInit( &p ); loadInfo( &p, &mall ); }
             pause();
             while ( state != FINISH ) {
                 optionsVehicleMall( &state );
@@ -315,12 +319,12 @@ int main() {
                     }
                     state = PARKING;
                 }
+                else if ( state == SAVEFILE ) {
+                    saveInfo( p, mall );
+                    pause();
+                }
             }
             state = INIT;
-        }
-        else if (state == LOADFILE) {
-            printf("Por implementar.\n");
-            state = LOADFILE;
         }
     }
     return 0;

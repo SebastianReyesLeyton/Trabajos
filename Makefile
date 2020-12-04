@@ -17,7 +17,7 @@ mallTest4:
 	gcc $(tests)/mallTest4.c $(services)/local.c $(services)/mall.c -o mallTest4.out -lrt
 
 main:
-	gcc main.c $(services)/local.c $(services)/mall.c $(services)/parkingLot.c $(services)/parking.c -o main.exe -lrt
+	gcc main.c $(services)/local.c $(services)/mall.c $(services)/parkingLot.c $(services)/parking.c $(services)/database.c -o main.exe -lrt
 
 parkingLotTest:
 	gcc $(tests)/parkingLotTest.c $(services)/parkingLot.c -o parkingLotTest.out -lrt
