@@ -62,8 +62,6 @@ int leaveParking( Parking *p, int pos ) {
 
 void showParkingState( Parking p ) {
     for (int i = 0; i < p.n; i++) {
-        if (p.arr[i].state == FREE) {
-            showParkingLot( p.arr[i] );
-        }
+        showParkingLot( p.arr[i] );
     }
 }

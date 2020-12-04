@@ -281,10 +281,10 @@ int main() {
                             pause();
                             break;
                         case EXTENDPARKING:
-                            printf("Ingresa el nuevo tamano del parqueadero: ");
+                            printf("Ingresa el cuantos espacios nuevos hay en el parqueadero: ");
                             scanf("%d", &ans);
-                            if (ans <= p.n) {printf("Proceso no realizado debido a que no se esta aumentado el tamano del parqueadero.\n");}
-                            else {changeSize( &p, ans ); printf("Proceso realizado con exito!!.\n");}
+                            changeSize( &p, ans + p.n ); 
+                            printf("Proceso realizado con exito!!.\n");
                             pause();
                             break;
                         case STATEPARKING:

@@ -17,7 +17,7 @@ mallTest4:
 	gcc $(tests)/mallTest4.c $(services)/local.c $(services)/mall.c -o mallTest4.out -lrt
 
 main:
-	gcc main.c $(services)/local.c $(services)/mall.c $(services)/parkingLot.c $(services)/parking.c -o main.out -lrt
+	gcc main.c $(services)/local.c $(services)/mall.c $(services)/parkingLot.c $(services)/parking.c -o main.exe -lrt
 
 parkingLotTest:
 	gcc $(tests)/parkingLotTest.c $(services)/parkingLot.c -o parkingLotTest.out -lrt
@@ -29,4 +29,4 @@ parkingTest:
 	gcc $(tests)/parkingTest.c $(services)/parkingLot.c $(services)/parking.c -o parkingTest.out -lrt
 
 delete: 
-	rm *.out
+	rm *.out *.exe
