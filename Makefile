@@ -30,3 +30,6 @@ parkingTest:
 
 delete: 
 	rm *.out *.exe
+
+deleteDat:
+	rm *.dat
